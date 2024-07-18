@@ -24,12 +24,13 @@ class Home extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Task Organizer'),
+          title: Text('MANAGEMEN TUGAS DAN CATATN'),
+          centerTitle: true,
           bottom: TabBar(
             tabs: [
               Tab(text: 'Tugas'),
               Tab(text: 'Catatan'),
-              Tab(text: 'Profil'), 
+              Tab(text: 'Profil'),
             ],
           ),
         ),
@@ -37,7 +38,7 @@ class Home extends StatelessWidget {
           children: [
             TaskTab(taskStream: _taskStream),
             NoteTab(noteStream: _noteStream),
-            ProfileTab(nim: nim, email: email), 
+            ProfileTab(nim: nim, email: email),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -87,20 +88,100 @@ class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Email: $nim', style: TextStyle(fontSize: 20)),
-          SizedBox(height: 10),
-          Text('NIM: $email', style: TextStyle(fontSize: 20)),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-            child: Text('Logout'),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.blueAccent,
+                    child: Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Card(
+              elevation: 4.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'EMAIL:',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          email,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'NIM:',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          nim,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              child: Text('Logout', style: TextStyle(fontSize: 18)),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -127,7 +208,7 @@ class TaskTab extends StatelessWidget {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+      throw 'Tidak bisa mengirim $url';
     }
   }
 
@@ -137,7 +218,7 @@ class TaskTab extends StatelessWidget {
       stream: taskStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Something went wrong'));
+          return Center(child: Text('Ada yang salah'));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -145,7 +226,7 @@ class TaskTab extends StatelessWidget {
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No tasks available'));
+          return Center(child: Text('Tidak ada tugas'));
         }
 
         return ListView(
@@ -154,7 +235,7 @@ class TaskTab extends StatelessWidget {
                 document.data() as Map<String, dynamic>?;
 
             if (data == null) {
-              return SizedBox(); 
+              return SizedBox();
             }
 
             String title = data['title'] ?? 'No title';
@@ -246,7 +327,7 @@ class NoteTab extends StatelessWidget {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+      throw 'Tidak bisa mengirim $url';
     }
   }
 
@@ -256,7 +337,7 @@ class NoteTab extends StatelessWidget {
       stream: noteStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Something went wrong'));
+          return Center(child: Text('Ada sesuatu yang salah'));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -264,7 +345,7 @@ class NoteTab extends StatelessWidget {
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No notes available'));
+          return Center(child: Text('Tidak ada catatan'));
         }
 
         return ListView(
@@ -273,7 +354,7 @@ class NoteTab extends StatelessWidget {
                 document.data() as Map<String, dynamic>?;
 
             if (data == null) {
-              return SizedBox(); 
+              return SizedBox();
             }
 
             String title = data['title'] ?? 'No title';
